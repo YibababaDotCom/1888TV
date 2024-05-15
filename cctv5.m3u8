@@ -1,0 +1,4 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=540000
+http://116.162.6.192/4403-txt.yiyang.otvcloud.com/otv/skcc/live/channel5/index.m3u8
