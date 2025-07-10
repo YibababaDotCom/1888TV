@@ -4,3 +4,5 @@
 https://live.catvod.com/smart.php?id=jade_twn
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
 https://live.catvod.com/smart.php?id=Jade_xue
+#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
+https://live.tvfix.org/live/jade/index.m3u8
