@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
-https://stream.iptv-search.com/main.php?id=CCTV5&t=1751944651&token=cd5e1db9e71ceaa00707e02ebf06706a
+http://59.173.120.212:4000/rtp/239.69.1.123:10376
