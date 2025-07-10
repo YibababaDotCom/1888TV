@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
-http://59.173.120.212:4000/rtp/239.69.1.123:10376
+https://live.catvod.com/smart.php?id=cctv5
