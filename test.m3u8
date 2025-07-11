@@ -1,6 +1,6 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
-https://smart.pendy.dpdns.org/Smart.php?id=jiangsu_twn
+http://127.0.0.1/gcts.php?id=CCTV5+HD
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=10000000
 http://tbtv.me:2095/play/live.php?mac=00:1A:79:E7:32:0C&stream=186427&extension=m3u8
