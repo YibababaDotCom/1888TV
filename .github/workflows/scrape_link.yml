@@ -4,25 +4,21 @@ name: Scrape Live Stream Link Hourly
 
 on:
   schedule:
-    # Runs every hour at minute 0 (e.g., 0:00, 1:00, 2:00 etc. UTC)
-    # Adjust this cron schedule as needed.
-    # Cron strings are in UTC.
-    - cron: '0 * * * *'
-  # Allows you to manually trigger the workflow from the GitHub Actions UI
+    - cron: '0 * * * *' # Runs every hour at minute 0 (UTC)
   workflow_dispatch:
 
 jobs:
   scrape:
-    runs-on: ubuntu-latest # Use a fresh Ubuntu runner for each job
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Action to clone your repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # Action to set up a Python environment
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # Use a specific Python version (e.g., '3.9', '3.10', '3.11')
+          python-version: '3.x'
 
       - name: Install dependencies
         run: |
@@ -32,15 +28,14 @@ jobs:
       - name: Run scraping script
         run: python scrape_stream.py
 
-      - name: Commit and push updated stream URL
-        # This step commits the `stream_url.txt` file back to your repository
-        # if the content has changed.
+      - name: Commit and push updated M3U8 file
+        # This step will commit the 'cctv5_live.m3u8' file back to your repository
+        # if its content has changed (i.e., if the auth key was updated).
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided token by GitHub Actions
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add stream_url.txt
-          # The '|| true' allows the workflow to succeed even if there are no changes to commit.
-          git diff-index --quiet HEAD || git commit -m "Update live stream URL"
+          git add cctv5_huaren.m3u8 # <--- Changed from stream_url.txt
+          git diff-index --quiet HEAD || git commit -m "Update live stream M3U8"
           git push
