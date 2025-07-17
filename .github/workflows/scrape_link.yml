@@ -1,41 +1,63 @@
-# .github/workflows/scrape_link.yml
-
 name: Scrape Live Stream Link Hourly
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour at minute 0 (UTC)
+    # Runs every hour at minute 0 (e.g., 0:00, 1:00, 2:00 etc. UTC)
+    # Adjust this cron schedule as needed. Cron strings are in UTC.
+    - cron: '0 * * * *'
+  # Allows you to manually trigger the workflow from the GitHub Actions UI
   workflow_dispatch:
 
 jobs:
   scrape:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Use a fresh Ubuntu runner for each job
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Action to clone your repository
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5 # Action to set up a Python environment
         with:
-          python-version: '3.x'
+          python-version: '3.x' # Use a specific Python version (e.g., '3.9', '3.10', '3.11')
 
-      - name: Install dependencies
+      - name: Install core dependencies (requests, beautifulsoup4)
         run: |
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
+
+      # --- Optional: Steps for Selenium if you need to render JavaScript ---
+      # Uncomment these steps ONLY if the requests/BeautifulSoup method
+      # consistently fails to capture the 'auth=' part of the URL.
+      - name: Install Selenium dependencies
+        # This step will only run if the previous step needs Selenium.
+        # It's good practice to install all potential dependencies up front
+        # if your script might use both methods.
+        run: |
+          pip install selenium webdriver-manager
+        # if: failure() || success() # Consider adding an if condition if you want this to run conditionally
+
+      - name: Set up Chrome for Selenium
+        # This step installs Google Chrome, required for Selenium's ChromeDriver.
+        # Only needed if you use Selenium in your Python script.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+        # if: failure() || success() # Consider adding an if condition if you want this to run conditionally
+      # --- End Optional Selenium Setup ---
 
       - name: Run scraping script
         run: python scrape_stream.py
 
       - name: Commit and push updated M3U8 file
-        # This step will commit the 'cctv5_live.m3u8' file back to your repository
+        # This step will commit the 'cctv5_huaren.m3u8' file back to your repository
         # if its content has changed (i.e., if the auth key was updated).
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Automatically provided token by GitHub Actions
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add cctv5_huaren.m3u8 # <--- Changed from stream_url.txt
+          git add cctv5_huaren.m3u8 # Ensure this matches the filename in your Python script
+          # The '|| true' ensures the workflow doesn't fail if there are no changes to commit.
           git diff-index --quiet HEAD || git commit -m "Update live stream M3U8"
           git push
