@@ -3,17 +3,18 @@ from bs4 import BeautifulSoup
 import re
 import os
 
-def get_live_stream_url(https://huaren.live/viv/detail/id/536/nid/1.html):
+def get_live_stream_url(webpage_url):
     """
     Scrapes the webpage to find the live streaming M3U8 URL with the dynamic auth key.
     """
     try:
-        response = requests.get(https://huaren.live/viv/detail/id/536/nid/1.html, timeout=10)
+        response = requests.get(webpage_url, timeout=10)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Strategy 1: Find the button with data-play attribute for "咪咕线路"
+        # This assumes the '咪咕线路' button is still the primary source for the link
         migu_button = soup.find('button', {'class': 'route-btn', 'data-name': '咪咕线路'})
 
         if migu_button:
@@ -27,6 +28,10 @@ def get_live_stream_url(https://huaren.live/viv/detail/id/536/nid/1.html):
         script_tags = soup.find_all('script')
         for script in script_tags:
             if script.string:
+                # The regex needs to be more general since the base URL might change to huaren.live
+                # or adapt to the new structure if the playUrl variable changes slightly.
+                # Given the previous context, it's safer to keep the specific domain,
+                # but be aware if the domain itself changes.
                 match = re.search(r"var playUrl = '/static/ds3/dplayer.php\?url=(https:\/\/live\.huarenlivewebsite\.top\/stream\/CCTV5_MG\.m3u8\?auth=[^']+)'", script.string)
                 if match:
                     extracted_url = match.group(1)
@@ -43,20 +48,18 @@ def get_live_stream_url(https://huaren.live/viv/detail/id/536/nid/1.html):
         return None
 
 if __name__ == "__main__":
-    WEBPAGE_TO_SCRAPE = "https://huaren.live/viv/detail/id/536/nid/1.html" # Verify this URL
+    # --- IMPORTANT CHANGE HERE ---
+    # Update the URL to the new specific detail page URL
+    WEBPAGE_TO_SCRAPE = "https://huaren.live/viv/detail/id/536/nid/1.html"
 
     updated_stream_url = get_live_stream_url(WEBPAGE_TO_SCRAPE)
 
     if updated_stream_url:
         print(f"Successfully scraped the live stream URL: {updated_stream_url}")
 
-        # Define the output M3U8 filename
         output_filename = "cctv5_huaren.m3u8"
-
-        # Create the M3U8 content
         m3u8_content = f"#EXTM3U\n{updated_stream_url}\n"
 
-        # Write the content to the .m3u8 file
         try:
             with open(output_filename, "w") as f:
                 f.write(m3u8_content)
