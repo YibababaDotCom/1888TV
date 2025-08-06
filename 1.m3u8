@@ -1,4 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-STREAM-INF:BANDWIDTH=500000
-http://live.sxrtv.com/iptv/cctv5.flv
+http://61.163.58.168:2024/fhtvxf.php?id=CCTV5
